@@ -1,0 +1,178 @@
+Junit 
+======
+It is a unit testing framework.
+
+A unit test is a block of code that verifies the accuracy of a smaller, isolated block of application code, typically a function or method.
+
+It is important for TDD i.e Test Driven Development.
+
+The latest version of Junit is Junit5.
+
+To perform unit testing we need to create test cases or test suit.
+
+
+
+Steps to perform unit testing 
+==============================
+
+Project Structure 
+-----------------
+JunitProj
+|
+|---src/main/java
+	|
+	|---com.ihub.www
+		|
+		|---Demo.java
+|
+|---src/main/resources
+|
+|---src/test/java
+	|
+	|---com.ihub.www
+		|
+		|---DemoTest.java
+|
+|---pom.xml 
+
+step1:
+------
+	Create a simple maven project.
+	ex:
+		File --> New --> Maven Project --> select (create simple project) -->
+		Next --> Group id : com.ihub.www
+			 Artifact id : JunitProj
+			 Name : JunitProj
+			 Description : Demonstration on Junit ---> Finish.
+
+step2:
+-----
+	Create a "com.ihub.www" package inside "src/main/java" folder.
+
+step3:
+------
+	Create a Demo.java file inside "com.ihub.www" package.
+
+Demo.java
+----------
+package com.ihub.www;
+
+public class Demo 
+{
+	public int sum(int a,int b)
+	{
+		return a+b;
+	}
+	
+	public String concatination(String str1,String str2)
+	{
+		return str1+str2;
+	}
+}
+
+step4:
+------
+	Add test cases to perform unit testing.
+	ex:
+		Right click to Demo.java --> new --> others --> Junit --> Junit Test case 
+		--> Next --> select sum() and concatination() methods --> Finish --> ok.
+
+
+
+
+step5:
+------
+	Add the logic for test cases inside DemoTest.java file.
+
+DemoTest.java
+---------------
+package com.ihub.www;
+
+import static org.junit.Assert.*;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class DemoTest {
+
+	Demo d=null;
+	
+	@Before
+	public void setUp() throws Exception 
+	{
+		d = new Demo();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void testSum() {
+	
+		int result = d.sum(10,20);
+		assertEquals(30, result);
+		
+	}
+
+	@Test
+	public void testConcatination()
+	{
+		String result = d.concatination("ihub", "talent");
+		assertEquals("ihubtalent", result);
+	}
+}
+
+step6:
+-----
+	Run the test cases.
+	ex:
+		Right click to DemoTest.java file --> run as --> Junit. 
+
+
+Note:
+-----
+	Green color indicates unit test case is passed.
+	Brown color indicates unit test case is failed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

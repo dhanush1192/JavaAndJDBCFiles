@@ -1,0 +1,466 @@
+Transaction Management 
+=====================
+Transaction means a single unit of work.
+
+We commit if transaction done successfully.
+
+We rollback if transaction is failed.
+
+Diagram: jdbc7.1
+
+
+SBI bank 
+==========
+drop table sbi;
+create table sbi(accno number(6), acchold varchar2(10), accbal number(8));
+insert into sbi values(111111,'Balu',90000);
+insert into sbi values(222222,'Tarun',80000);
+commit;
+
+KOTAK bank
+==========
+drop table kotak;
+create table kotak(accno number(6), acchold varchar2(10), accbal number(8));
+insert into kotak values(100001,'Nikhil',5000);
+insert into kotak values(200002,'Sai',6000);
+commit;
+
+ex:
+---
+package com.ihub.www;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class TXNManagementApp 
+{
+	public static void main(String[] args)throws Exception  
+	{
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter the source account number :");
+		int sno = sc.nextInt();
+		
+		System.out.println("Enter the destination account number :");
+		int dno=sc.nextInt();
+		
+		System.out.println("Enter the amount to be transfer :");
+		int amt = sc.nextInt();
+		
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE","system","admin");
+		
+		//set auto commit off 
+		con.setAutoCommit(false);
+		
+		Statement st = con.createStatement();
+		
+		String qry1 = "update sbi set accbal=accbal-"+amt+" where accno="+sno;
+		String qry2 = "update kotak set accbal=accbal+"+amt+" where accno="+dno;
+		
+		//add the queries to batch
+		st.addBatch(qry1);
+		st.addBatch(qry2);
+		
+		//execute the batch
+		int[] result = st.executeBatch();
+		
+		boolean flag=true;
+		for(int i:result)
+		{
+			if(i==0)
+			{
+				flag=false;
+				break;
+			}
+		}
+		if(flag==true)
+		{
+			System.out.println("Transaction Done successfully");
+			con.commit();
+		}
+		else
+		{
+			System.out.println("Transaction Failed");
+			con.rollback();
+		}
+		
+		st.close();
+		con.close();
+	}
+}
+
+Types of ResultSet objects
+==========================
+We have two types of ResultSet objects.
+
+1) Non-scrollable ResultSet object 
+
+2) Scrollable ResultSet object 
+
+
+Diagram: jdbc7.2
+
+
+1) Non-scrollable ResultSet object 
+-----------------------------------
+If a ResultSet object which allows us to read the records sequentially, uni-directionally is called non-scrollable ResultSet object.
+
+By default every ResultSet object is non-scrollable ResultSet object.
+
+If JDBC Statement object is created without TYPE and MODE value then such ResultSet object is called non-scrollable ResultSet object.
+
+ex:
+	Statement st = con.createStatement();
+	ResultSet rs = st.executeQuery("select * from student");
+
+
+
+2) Scrollable ResultSet object 
+---------------------------------
+If a ResultSet object which allows us to read the records non-sequentially, bi-directionally or randomly is called scrollable ResultSet object.
+
+If JDBC Statement object is created witho TYPE and MODE value then such ResultSet object is called scrollable ResultSet object.
+
+ex:
+	
+	Statement st = con.createStatement(TYPE_VALUE,MODE_VALUE);
+	ResultSet rs = st.executeQuery("select * from student");
+
+We have two types of TYPE values
+---------------------------------
+	ResultSet.TYPE_SCROLL_SENSITIVE
+	ResultSet.TYPE_SCROLL_INSENSITIVE
+
+We have two types of MODE values
+--------------------------------
+	ResultSet.CONCUR_READ_ONLY
+	ResultSet.CONCUR_UPDATABLE
+
+ex:
+----
+package com.ihub.www;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class ScrollableRSApp 
+{
+	public static void main(String[] args)throws Exception  
+	{
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE","system","admin");
+		Statement st = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
+		String qry = "select * from student";
+		ResultSet rs = st.executeQuery(qry);
+		
+		//top to bottom 
+		while(rs.next())
+		{
+			System.out.println(rs.getRow()+" "+rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+		}
+		
+		//bottom to top 
+		rs.afterLast();
+		while(rs.previous())
+		{
+			System.out.println(rs.getRow()+" "+rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+		}
+		
+		rs.first();
+		System.out.println(rs.getRow()+" "+rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+		
+		rs.last();
+		System.out.println(rs.getRow()+" "+rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+		
+		rs.relative(-1);
+		System.out.println(rs.getRow()+" "+rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+		
+		rs.close();
+		st.close();
+		con.close();
+	}
+}
+
+
+Steps to interact with MySQL Database
+======================================
+step1:
+------
+	Download and Install MySQL database.
+	ex:
+		https://dev.mysql.com/downloads/installer/
+
+step2:
+------
+	Copy the mysql server bin directory and paste in environmental variables.
+	ex:
+		C:\Program Files\MySQL\MySQL Server 8.0\bin	
+
+step3:
+------
+	Connect to mysql database.
+	ex:
+		username : root (default)
+		password : root 
+
+step4:
+------
+	Create a schema and use that schema.	
+	ex:
+		show databases;
+	
+		create schema  demo47;
+		
+		use demo47;
+
+step5:
+------
+	Create a student table with records.
+	ex:
+		create table student(sno int(3),sname varchar(10),sadd varchar(12));
+
+		insert into student values(101,'raja','hyd');
+		insert into student values(102,'ravi','delhi');
+		insert into student values(103,'ramana','vizag');
+		commit;		
+		select * from student;
+
+step6:
+------
+	Launch Eclipse IDE by choosing workspace location.
+
+step7:
+------
+	Create a java project i.e MySQLProj.
+	
+
+step8:
+------
+	Add "mysql-connector-j.jar" file in project build path.
+
+	ex:
+		https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/
+
+step9:
+------
+	Create a "com.ihub.www" package inside "src" folder.
+
+step10:
+------
+	Create a SelectApp.java file inside "com.ihub.www" package.
+
+SelectApp.java
+--------------
+package com.ihub.www;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class SelectApp 
+{
+	public static void main(String[] args) 
+	{
+		final String DRIVER="com.mysql.cj.jdbc.Driver";
+		final String URL="jdbc:mysql://localhost:3306/demo47";
+		final String USERNAME="root";
+		final String PASSWORD="root";
+		
+		Connection con =null;
+		Statement st = null;
+		ResultSet rs = null;
+		String qry = null;
+		try
+		{
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL,USERNAME,PASSWORD);
+			st = con.createStatement();
+			qry = "select * from student";
+			rs = st.executeQuery(qry);
+			while(rs.next())
+			{
+				System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
+			}
+			
+			rs.close();
+			st.close();
+			con.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+
+step11:
+------
+	Run SelectApp.java file.
+
+
+JDBC Application to interact  with MongoDB Database
+====================================================
+
+step1:
+-----
+	Download and install MongoDB Community Server.
+	ex:
+		https://www.mongodb.com/try/download/community
+
+step2:
+-----
+	Downoad and install MongoDB Shell.
+	ex:
+		https://www.mongodb.com/try/download/shell
+
+step3:
+------
+	Extract Mongodb shell inside "MongoDB" folder.
+	ex:
+		C:\Program Files\MongoDB
+
+step4:
+------
+	Copy "bin" directory of mongoshell.
+	ex:
+		C:\Program Files\MongoDB\mongosh-2.3.0-win32-x64\bin
+
+step5:
+-----
+	Paste "bin" directory in environmental variables.
+	ex:
+		right click to This PC --> properties --> Advanced System Settings -->
+		Environmental variables -->  System variables --> click to path --> click to edit 
+		button --> New --> paste (C:\Program Files\MongoDB\mongosh-2.3.0-win32-x64\bin) -->ok
+		--->ok  --->ok.
+
+step6:
+-----
+	Launch Eclipse IDE by choosing workspace location.
+
+step7:
+-----
+	Create java project i.e MongoDBProj inside eclipse IDE.
+
+	ex:
+		File --> New --> Java project --> Name : MongoDBProj --> Next --> Finish.
+
+step8:
+-----
+	Download and add mongodb jar file in project build path.
+	ex:
+		jar file link : https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.11.2/
+
+
+	right click to MongoDBProj --> Buildpath --> configure build path --> libraries -->
+	click to classpath --> add external jars --> select mongo-java-driver.jar file --> 
+	Open --> Apply and close.
+
+step9:
+------
+	Create a "com.ihub.www" package inside "src" folder.
+
+step10:
+------
+	Create a InsertApp.java file inside "com.ihub.www" package.
+
+SelectApp.java
+--------------
+package com.ihub.www;
+
+import org.bson.Document;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+public class InsertApp 
+{
+	public static void main(String[] args) 
+	{
+		try(MongoClient mongoClient=MongoClients.create("mongodb://localhost:27017");)
+		{
+			MongoDatabase mongoDatabase=mongoClient.getDatabase("myDatabase");
+			
+			MongoCollection<Document> mongoCollection=mongoDatabase.getCollection("myCollection");
+			
+			Document doc=new Document("id", 101)
+							.append("name","Alan")
+							.append("add","Hyd");
+			
+			mongoCollection.insertOne(doc);
+			
+			System.out.println("Record Inserted in MongoDB");
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+step11:
+-------
+	Run the jdbc application.
+
+
+MongoDB Commands
+=================
+
+show dbs;
+
+use  myDatabase;
+
+show collections; 
+
+db.myCollection.find();
+
+db.myCollection.drop();
+
+db.dropDatabase();
+
+
+
+
+SelectApp.java
+-------------
+package com.ihub.www;
+
+import org.bson.Document;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+public class InsertApp 
+{
+	public static void main(String[] args) 
+	{
+		try(MongoClient mongoClient=MongoClients.create("mongodb://localhost:27017");)
+		{
+			MongoDatabase mongoDatabase=mongoClient.getDatabase("myDatabase");
+			
+			MongoCollection mongoCollection=mongoDatabase.getCollection("myCollection");
+			
+			Document doc=(Document) mongoCollection.find(new Document("pid",101)).first();
+			
+			System.out.println(doc);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+
+

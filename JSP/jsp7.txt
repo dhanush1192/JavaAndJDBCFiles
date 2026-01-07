@@ -1,0 +1,245 @@
+Q) What is difference between GIT and GITHUB?
+
+GIT						GITHUB 
+---------					--------
+It is a distributed version control system	It is a hosting server for git.
+which is used to track the changes in a file
+of a project.
+
+It is a software.				It is a service.
+
+Locally installed in a computer.		It is hosted on web.
+
+It contains local repository.			It contains remote repository.
+
+It is command based.				It is GUI.
+
+
+GIT Stages
+==========
+GIT contains three stages.
+
+1) Working Directory 
+
+2) Staging Area 
+
+3) Repository 
+
+Diagram: jsp7.1
+
+Steps to push the code in a GITHUB
+===================================
+step1:
+-----
+	Create account in GITHUB.
+	ex:
+		www.github.com 
+
+step2:
+------
+	Login to GITHUB account.
+	ex:
+		Username or email : NiyazulHasan
+		Password : *****
+
+step3:
+-----
+	Create a remote repository in github.
+	ex:
+		https://github.com/NiyazulHasan/batch47
+
+step4:
+------
+	Download and install GIT software.
+	ex:
+		https://git-scm.com/downloads
+
+step5:
+------
+	Create a "myFolder" on desktop.
+
+step6:
+------
+	Open the git bash from myFolder location.
+
+step7:
+------
+	Initialized the git empty repository.
+
+step8:
+------
+	Copy and paste some files inside myFolder.
+
+step9:
+-----
+	Check git status.
+	ex:
+		git status
+
+step10:
+------
+	Change the branch from master to main.
+	ex:
+		git branch --move master main 
+
+step11:
+-----
+	Add the files to staging area.
+	ex:
+		git add . 
+
+step12:
+-------
+	Commit the changes.
+	ex:
+		git commit -m "my notes";
+
+step13:
+-------
+	Please tell me who you are.
+	ex:
+		git config --global user.email ulhasan7867@gmail.com
+
+step14:
+-----
+	Add remote repository to origin main.
+	ex:
+		git remote add origin https://github.com/NiyazulHasan/batch47
+
+step15:
+------
+	Push the data to remote repository.
+	ex:
+		git push -f origin main 
+
+step16:
+------
+	Refresh the remote repository to see the latest files.
+	ex:
+		https://github.com/NiyazulHasan/batch47
+
+
+Steps to make a pull request 
+===========================
+step1:
+------
+	Create a notes folder on desktop.
+
+step2:
+-----
+	Open the git bash from notes folder.
+
+
+step3:
+------
+	Initialized the git empty repository.
+	ex:	
+		git init 
+
+step4:
+-----
+	Make a pull request.
+	ex:
+		git pull https://github.com/NiyazulHasan/batch47
+
+
+
+How to convert web project to war file 
+======================================
+step1:
+------
+	Take existing Maven project.
+
+step2:
+------
+	Convert Maven project to war file.
+	ex:
+		Right click to the project --> export --> war file -->
+		Web project : MavenProj
+		destination : Desktop   ---> Finish.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

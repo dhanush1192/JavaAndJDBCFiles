@@ -1,0 +1,345 @@
+Q) Write a jdbc application to create student table?
+
+package com.ihub.www;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+public class CreateApp 
+{
+	public static void main(String[] args)throws Exception  
+	{
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:ORCL","system","admin");
+		Statement st=con.createStatement();
+		
+		String qry="create table student(sno number(3),sname varchar2(10),sadd varchar2(12))";
+		
+		st.executeUpdate(qry);
+		
+		System.out.println("Table create successfully");
+		
+		st.close();
+		con.close();
+	}
+}
+
+Q) Write a jdbc application to fetch the Students records from database and store in ArrayList?
+
+Student.java
+------------
+package com.ihub.www;
+
+public class Student 
+{
+	private int studId;
+	private String studName;
+	private String studAddress;
+	
+	//parameterized constructor 
+	public Student(int studId, String studName, String studAddress) {
+		super();
+		this.studId = studId;
+		this.studName = studName;
+		this.studAddress = studAddress;
+	}
+
+	@Override
+	public String toString() {
+		return studId+" "+studName+" "+studAddress;
+	}
+}
+
+
+FetchApp.java
+-------------
+package com.ihub.www;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+public class FetchApp 
+{
+	public static void main(String[] args)throws Exception 
+	{
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:ORCL","system","admin");
+		Statement st=con.createStatement();
+		String qry ="select * from student";
+		ResultSet rs=st.executeQuery(qry);
+		
+		ArrayList<Student> al = new ArrayList<Student>();
+		
+		while(rs.next())
+		{
+			al.add(new Student(rs.getInt(1),rs.getString(2),rs.getString(3)));
+		}
+		
+		//display the data from arraylist
+		al.forEach(System.out::println);
+		
+		rs.close();
+		st.close();
+		con.close();
+	}
+}
+
+
+Type1 JDBC Driver Architecture / JDBC-ODBC Bridge Driver
+==========================================================
+Type1 JDBC driver is not designed to interact with database software directly.
+
+It is designed to take the support of ODBC Driver and Vendor DB library to locate and interact with database software.
+
+Diagram: jdbc4.1
+
+Advantages:
+
+> Using Type1 jdbc driver we can interact with any database software.
+
+> It is a built-in driver of JDK.
+
+Disadvantages:
+
+> This driver performance is not good. It is not suitable for medium or large scale projects. Hence 
+  it is not a industry standard driver.
+
+> To work with type1 jdbc driver we need to arrange ODBC driver and Vendor db library.
+
+> Since ODBC driver and vendor db library present at client side so it is not suitable for untrusted 
+  applets to database communication.
+
+
+
+Type2 JDBC Driver Architecture / Native API 
+============================================
+Type2 JDBC driver is not designed to interact with database software directly.
+
+It is designed to take the support of Vendor DB library to locate and interact with database software.
+
+Diagram: jdbc4.2
+
+Advantages:
+
+> Type2 JDBC driver gives better performance compare to Type1 JDBC driver.
+
+> Type2 JDBC driver does not support ODBC driver.
+
+Disadvantages:
+
+> This driver performance is quit slow. It is not suitable for medium and large scale projects. Hence 
+  it is not a industry standard driver.
+
+> To work with Type2 JDBC driver we need to arrange Vendor DB library.
+
+> Since vendor db library present at client side so it is not suitable for untrusted applets to 
+  database communication.
+
+> For every database software we need to arrange type2 jdbc driver seperately.
+
+
+Type4 JDBC Driver / Native Protocol / thin Driver
+==================================================
+Type4 JDBC driver is not designed to take the support of ODBC driver and Vendor DB library.
+
+It is designed to interact with database software directly.
+
+Diagram: jdbc4.3
+
+Advantages:
+
+> This driver will give better performance compare to Type1 and Type2 jdbc driver.
+
+> It is developed by using java so it will give platform independency.
+
+> It does not take the support of ODBC driver and Vendor DB library.
+
+> Since ODBC driver and vendor db library not present at client side. So it is suitable for untrusted
+  applets to database communication.
+
+> It suitable for medium and large scale projects. Hence it is a industry standard driver.
+
+Disadvantages:
+
+> It is not a built-in driver of JDK.
+
+> For every database software we need to arrange Type4 jdbc driver seperately.
+
+JDBC Connection Pool 
+====================
+It is a factory containing a set of readily available JDBC Connection objects before actual being used.
+
+JDBC connection pool represent connectivity with same database software. 
+
+Diagram: jdbc4.4
+
+Advantages:
+
+> It gives reusable JDBC Connection objects.
+
+> With miniumum number of JDBC Connection objects we can interact with multiple clients.
+
+> A user is not responsible to create,manage and destroy JDBC Connection objects. A JDBC connection 
+  pool is responsible.
+
+
+Type3 JDBC Driver Architecture / Net Protocol 
+===============================================
+A web server , proxy server or IDE's server contains JDBC connection pool.
+
+Type3 JDBC driver is not designed to interact with database software directly.
+
+It is designed to interact with web server or proxy server  to get one reusable JDBC Connection object
+from jdbc connection pool.
+
+Diagram: jdbc4.5
+
+With respect to the diagram: 
+
+1) Webserver or proxy server interacts with database software and gets JDBC Connection objects
+   in JDBC connection pool.
+
+2) Our application uses Type3 jdbc driver to interact with web server or proxy server to get one 
+   reusable jdbc Connection object.
+
+3) Our application uses JDBC Connection object to create other JDBC connection objects.
+
+4) Once if we call con.close() our Connection object goes back to JDBC connection pool.
+
+
+
+Q) Types of Connection objects ?
+
+We have two types of Connection objects.
+
+1) Direct JDBC Connection object 
+---------------------------------
+A JDBC Connection object is created by the user is called direct jdbc Connection object.
+ex:
+	Class.forName("driver-name");
+	Connection con = DriverManager.getConnection("driver-url","db-user","db-pwd");
+
+
+2) Pooled JDBC Connection object 
+------------------------------------
+A JDBC Connection object which is gathered from JDBC Connection pool.
+
+
+
+
+SQL Injection Problem
+=====================
+Along with input values if we pass special SQL instructions that change behaviour of a query and behaviour of an application is called SQL injection problem.
+
+Here special SQL instructions means comment in SQL i.e --.
+
+While dealing with simple Statement object there is a chance of raising SQL injection problem.
+
+ex:
+	Enter the username : raja'-- 
+	Enter the password : hyd
+
+	Valid Credentials 
+
+To overcome this limitation we need to use PreparedStatement object.
+
+
+Userlist table 
+--------------
+drop table userlist;
+
+create table userlist(uname varchar2(10), pwd varchar2(10));
+
+insert into userlist values('raja','rani');
+
+insert into userlist values('king','kingdom');
+
+commit;
+
+
+ex:
+----
+package com.ihub.www;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class SqlInjProbApp 
+{
+	public static void main(String[] args)throws Exception  
+	{
+		Scanner sc=new Scanner(System.in);
+		
+		System.out.println("Enter the username :");
+		String name = sc.next();
+		
+		System.out.println("Enter the password :");
+		String pass = sc.next();
+		
+		//converting string inputs according to SQL query
+		name="'"+name+"'";
+		pass="'"+pass+"'";
+		
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:ORCL","system","admin");
+		Statement st=con.createStatement();
+		
+		String qry="select count(*) from userlist where uname="+name+" and pwd="+pass;
+		
+		ResultSet rs = st.executeQuery(qry);
+		
+		int result=0;
+		while(rs.next())
+		{
+			result = rs.getInt(1);
+		}
+		if(result==0)
+			System.out.println("Invalid Credentials");
+		else
+			System.out.println("Valid Credentials");
+		
+		rs.close();
+		st.close();
+		con.close();
+	}
+}
+
+Q) How many statement objects are there in JDBC?
+
+We have three statement objects in JDBC.
+
+1) Simple Statement object
+-------------------------
+It is an object of underlying supplied java class which implements java.sql.Statement interface.
+
+2) PreparedStatement object 
+---------------------------
+It is an object of underlying supplied java class which implements java.sql.PreparedStatement interface.
+
+3) CallableStatement object 
+----------------------------
+It is an object of underlying supplied java class which implements java.sql.CallableStatement interface.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

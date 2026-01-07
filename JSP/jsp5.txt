@@ -1,0 +1,227 @@
+MVC in JSP 
+==========
+MVC stands for Model View Controller.
+
+MVC is one of the design pattern which seperates business logic, persistence logic and data.
+
+Controller acts like a interface between Model and View.
+
+Controller is used to intercept all incoming request.
+
+Model contains business logic and some times it contains data.
+
+View is presentation i.e UI (User Interface).
+
+Diagram: jsp5.1
+
+Deployment Directory Structure 
+------------------------------
+JspApp12
+|
+|---Java Resources
+|	|
+	|-------src
+		|
+		|---com.ihub.www
+			|
+			|---LoginSrv.java
+			|---LoginBean.java 
+|---WebContent
+	|
+	|---form.html 
+	|---view.jsp 
+	|---error.jsp 
+	|
+	|---WEB-INF
+		|
+		|---web.xml 
+Note:
+-----
+In above application we need to add "servlet-api.jar" file in project build path.
+
+form.html 
+----------
+
+<form action="test">
+
+	<table align="center">
+		<tr>
+			<td>UserName:</td>
+			<td><input type="text" name="username"/></td>
+		</tr>
+		<tr>
+			<td>Password:</td>
+			<td><input type="password" name="password"/></td>
+		</tr>
+		<tr>
+			<td><input type="reset" value="reset"/></td>
+			<td><input type="submit" value="submit"/></td>
+		</tr>
+	</table>
+	
+</form>
+
+web.xml 
+--------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  
+  <servlet>
+  	<servlet-name>LoginSrv</servlet-name>
+  	<servlet-class>com.ihub.www.LoginSrv</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>LoginSrv</servlet-name>
+  	<url-pattern>/test</url-pattern>
+  </servlet-mapping>
+  
+  <welcome-file-list>
+  	<welcome-file>form.html</welcome-file>
+  </welcome-file-list>
+  
+</web-app>
+
+LoginBean.java
+-------------
+package com.ihub.www;
+
+public class LoginBean 
+{
+	private String username;
+	private String password;
+	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+}
+
+LoginSrv.java
+--------------
+package com.ihub.www;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class LoginSrv extends HttpServlet 
+{
+	protected void doGet(HttpServletRequest req,HttpServletResponse res)throws ServletException,IOException
+	{
+		PrintWriter pw =res.getWriter();
+		res.setContentType("text/html");
+		
+		//reading form data 
+		String name = req.getParameter("username");
+		String pass = req.getParameter("password");
+		
+		//create login bean object and set the data 
+		LoginBean lb = new LoginBean();
+		lb.setUsername(name);
+		lb.setPassword(pass);
+		
+		req.setAttribute("bean", lb);
+		
+		if(pass.equals("admin"))
+		{
+			RequestDispatcher rd = req.getRequestDispatcher("view.jsp");
+			rd.forward(req, res);
+		}
+		else
+		{
+			RequestDispatcher rd = req.getRequestDispatcher("error.jsp");
+			rd.forward(req, res);
+		}
+		
+		pw.close();
+	}
+}
+
+view.jsp
+---------
+
+<%@page import ="com.ihub.www.LoginBean" %>
+
+<%
+	LoginBean lb = (LoginBean) request.getAttribute("bean");
+%>
+Username = <%= lb.getUsername() %> <br>
+Password = <%= lb.getPassword() %> <br>
+
+
+error.jsp 
+----------
+<center>
+<b style="color:red">
+	Invalid Username or password !!
+</b>
+</center>
+
+<%@include file="form.html" %>
+
+
+Request url 
+----------
+	http://localhost:2525/JspApp12/
+
+Maven 
+======
+Maven is a project building management tool.
+
+Maven is used to simplify the project development process.
+
+It is always recommanded to use maven or gradle to develop web applications.
+
+Maven project contains pom.xml file. 
+
+POM stands for Project Object Model.
+
+In pom.xml file we will add dependencies, packages and goals and etc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

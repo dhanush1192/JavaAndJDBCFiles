@@ -1,0 +1,173 @@
+JSP 
+====
+JSP stands for Java Server Pages.
+
+JSP is a dynamic web resource program which is used to develop web applications.
+
+JSP is a server side programming that allows developers to embed java code directly into HTML.
+
+
+Limitations with Servlets
+=========================
+> To work with servlet strong java knowledge is required.
+
+> It is not suitable for non-java programmers.
+
+> It does not give implicit objects.
+
+> Configuration of each servlet program in web.xml file is mandatory.
+
+> Handling exceptions are mandatory.
+
+> We can't maintain HTML code and Java Code seperately.
+
+
+
+Advantages of JSP 
+==================
+> To work with JSP strong knowledge is not required.
+
+> It is suitable for java and non-java programmers.
+
+> It supports tag based language.
+
+> It allows us to work with custom tags and third party supplied tags.
+
+> It gives nine implicit object.
+
+> Configuration of each jsp program in web.xml file is optional.
+
+> Handling exceptions are optional.
+
+> We can maintain HTML code and java code seperately.
+
+> It gives all the features of servlets.
+
+
+First web application develop having JSP program as web resource program 
+========================================================================
+
+Deployment Directory Structure 
+---------------------------
+JspApp1
+|
+|---Java Resources
+|
+|---WebContent
+	|
+	|---ABC.jsp
+	|
+	|---WEB-INF
+		|
+		|---web.xml 
+Note:
+-----
+In above application we need to add "servlet-api.jar" file in project build path.
+
+ABC.jsp 
+--------
+<center>
+	<h1>
+		Current Date and Time  <br>
+		
+		<%
+			java.util.Date d = new java.util.Date();
+			out.println(d);
+		%>
+		
+	</h1>
+</center>
+
+web.xml 
+---------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  
+  <welcome-file-list>
+  	<welcome-file>ABC.jsp</welcome-file>
+  </welcome-file-list>
+  
+</web-app>
+
+Request url 
+---------
+	http://localhost:2525/JspApp1/
+
+
+Configuration of JSP program in web.xml file
+============================================
+Deployment Directory Structure 
+---------------------------
+JspApp1
+|
+|---Java Resources
+|
+|---WebContent
+	|
+	|---ABC.jsp
+	|
+	|---WEB-INF
+		|
+		|---web.xml 
+Note:
+-----
+In above application we need to add "servlet-api.jar" file in project build path.
+
+ABC.jsp 
+--------
+<center>
+	<h1>
+		Current Date and Time  <br>
+		
+		<%
+			java.util.Date d = new java.util.Date();
+			out.println(d);
+		%>
+		
+	</h1>
+</center>
+
+web.xml 
+---------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  
+ <servlet>
+  	<servlet-name>ABC</servlet-name>
+  	<jsp-file>/ABC.jsp</jsp-file>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>ABC</servlet-name>
+  	<url-pattern>/test</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
+
+Request url 
+---------
+	http://localhost:2525/JspApp1/test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
